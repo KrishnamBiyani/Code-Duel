@@ -8,6 +8,7 @@
   },
   "keywords": [],
   "author": "",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
