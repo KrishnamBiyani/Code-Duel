@@ -48,10 +48,52 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
-  res.send("login");
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Inavalid Credentials" });
+    }
+
+    const isPassowdCorrect = await bcrypt.compare(password, user.password);
+    if (!isPassowdCorrect) {
+      return res.status(400).json({ message: "Inavalid Credentials" });
+    }
+
+    generateToken(user._id, res);
+
+    res.status(201).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.log("Error is login controller : ", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 };
 
 export const logout = (req, res) => {
-  res.send("login");
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged out" });
+  } catch (error) {
+    console.log("Error is logout controller : ", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const checkAuth = (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
