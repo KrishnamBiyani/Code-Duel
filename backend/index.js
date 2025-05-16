@@ -5,6 +5,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 import authRoutes from "./src/routes/auth.route.js";
+import roomRoutes from "./src/routes/room.route.js";
 import { connectDB } from "./src/lib/db.js";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/room", roomRoutes);
 
 server.listen(PORT, () => {
   console.log(`server started: ${PORT}`);
