@@ -2,7 +2,7 @@ import { generateRoomId } from "../lib/utils.js";
 import Room from "../models/room.model.js";
 
 export const createRoom = async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user._id.toString();
   const roomId = generateRoomId();
 
   try {
@@ -19,7 +19,7 @@ export const createRoom = async (req, res) => {
 };
 
 export const joinRoom = async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user._id.toString();
   const { roomId } = req.body;
 
   try {
@@ -27,6 +27,15 @@ export const joinRoom = async (req, res) => {
     if (!roomId || room.isFull) {
       return res.status(400).json({ message: "Room not available" });
     }
+
+    console.log("Room users:", room.users);
+    console.log("Current userId:", userId);
+
+    // prevent joining the same user again
+    if (room.users.map((u) => u.toString()).includes(userId)) {
+      return res.status(400).json({ message: "User already in the room" });
+    }
+
     room.users.push(userId);
     room.isFull = true;
     await room.save();
