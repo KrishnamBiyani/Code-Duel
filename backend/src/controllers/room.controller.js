@@ -11,7 +11,9 @@ export const createRoom = async (req, res) => {
       users: [userId],
     });
 
-    return res.status(201).json({ message: `Room created id : ${roomId}` });
+    return res
+      .status(201)
+      .json({ roomId, message: `Room created id : ${roomId}` });
   } catch (error) {
     console.log("Error in craeting room : ", error);
     return res.status(500).json("Room creation failed");

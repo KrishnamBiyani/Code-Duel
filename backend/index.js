@@ -1,10 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import http from "http";
 import cors from "cors";
 import { app, server } from "./src/lib/socket.js";
-import { Server } from "socket.io";
 
 import authRoutes from "./src/routes/auth.route.js";
 import roomRoutes from "./src/routes/room.route.js";
