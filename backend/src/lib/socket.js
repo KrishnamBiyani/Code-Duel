@@ -22,19 +22,38 @@ io.on("connection", (socket) => {
     if (!roomUsers[roomId]) roomUsers[roomId] = [];
 
     roomUsers[roomId].push({ socketId: socket.id, user });
-    console.log(`${user.name} joined room ${roomId}`);
+    console.log(`${user.fullName} joined room ${roomId}`);
 
     io.to(roomId).emit("room-users", roomUsers[roomId]);
   });
 
   socket.on("disconnect", () => {
-    console.log("Disconnected: ", socket.id);
+    console.log("Disconnected:", socket.id);
 
+    // Find the room the socket was in
     for (const roomId in roomUsers) {
+      const beforeCount = roomUsers[roomId].length;
+
       roomUsers[roomId] = roomUsers[roomId].filter(
         (entry) => entry.socketId !== socket.id
       );
-      io.to(roomId).emit("room-users", roomUsers[roomId]);
+
+      const afterCount = roomUsers[roomId].length;
+
+      // If someone was actually removed
+      if (afterCount !== beforeCount) {
+        console.log(`Updated users in room ${roomId}:`, roomUsers[roomId]);
+
+        // If room is now empty, delete it
+        if (afterCount === 0) {
+          delete roomUsers[roomId];
+          console.log(`Room ${roomId} is now empty and removed.`);
+        } else {
+          io.to(roomId).emit("room-users", roomUsers[roomId]);
+        }
+
+        break; // Exit early — socket can only be in one room
+      }
     }
   });
 });

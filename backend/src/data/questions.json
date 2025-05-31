@@ -1,0 +1,68 @@
+[
+    {
+        "questionId": "Q1",
+        "title": "Two Sum",
+        "description": "Given an array of integers nums and an integer target...",
+        "inputFormat": "Array of integers, Target integer",
+        "outputFormat": "Array of two indices",
+        "constraints": {
+            "nMin": 2,
+            "nMax": 10000
+        },
+        "difficulty": "Easy",
+        "tags": [
+            "array",
+            "hashmap"
+        ],
+        "examples": [
+            {
+                "input": [
+                    "nums = [2,7,11,15]",
+                    "target = 9"
+                ],
+                "output": "[0,1]"
+            }
+        ],
+        "testCases": [
+            {
+                "input": [
+                    "nums = [2,7,11,15]",
+                    "target = 9"
+                ],
+                "expected_output": "[0,1]"
+            }
+        ]
+    },
+    {
+        "questionId": "Q2",
+        "title": "Reverse a String",
+        "description": "Write a function that reverses a string.",
+        "inputFormat": "String s",
+        "outputFormat": "Reversed string",
+        "constraints": {
+            "nMin": 1,
+            "nMax": 1000
+        },
+        "difficulty": "Easy",
+        "tags": [
+            "string",
+            "two-pointer"
+        ],
+        "examples": [
+            {
+                "input": [
+                    "s = 'hello'"
+                ],
+                "output": "olleh"
+            }
+        ],
+        "testCases": [
+            {
+                "input": [
+                    "s = 'world'"
+                ],
+                "expected_output": "dlrow"
+            }
+        ]
+    }
+]
