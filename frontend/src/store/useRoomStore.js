@@ -11,7 +11,9 @@ export const useRoomStore = create((set, get) => ({
   roomUsers: [],
   socket: null,
   question: null,
-  authUser: null, // Store authUser locally
+  timeLeftMs: null,
+  timerIntervalId: null,
+  authUser: null,
 
   createRoom: async (userId) => {
     set({ isLoading: true, error: null });
@@ -41,6 +43,11 @@ export const useRoomStore = create((set, get) => ({
   },
 
   connectSocket: (user, roomId) => {
+    const oldSocket = get().socket;
+    if (oldSocket) {
+      oldSocket.disconnect();
+    }
+
     const socket = io(BASE_URL, {
       query: { userId: user._id },
     });
@@ -50,7 +57,6 @@ export const useRoomStore = create((set, get) => ({
     socket.emit("join-room", { roomId, user });
 
     socket.on("room-users", (users) => {
-      console.log("Received room users:", users);
       set({ roomUsers: users });
 
       const currentQuestion = get().question;
@@ -64,16 +70,57 @@ export const useRoomStore = create((set, get) => ({
       }
     });
 
-    socket.on("question:send", (question) => {
-      console.log("Received question from other user:", question);
-      set({ question });
+    socket.on("question:send", (questionPayload) => {
+      set({ question: questionPayload.question });
+      // Calculate timer start
+      get().startTimer(questionPayload.startTime, questionPayload.duration);
     });
   },
 
-  resetRoom: () => set({ roomId: "", error: null }),
+  startTimer: (startTime, duration) => {
+    if (get().timerIntervalId) {
+      clearInterval(get().timerIntervalId);
+    }
 
-  setQuestion: (question) => {
-    set({ question });
+    const updateTimer = () => {
+      const elapsed = Date.now() - startTime;
+      const remaining = duration - elapsed;
+      if (remaining <= 0) {
+        clearInterval(get().timerIntervalId);
+        set({ timeLeftMs: 0, timerIntervalId: null });
+      } else {
+        set({ timeLeftMs: remaining });
+      }
+    };
+
+    updateTimer(); // update immediately
+
+    const intervalId = setInterval(updateTimer, 1000);
+    set({ timerIntervalId: intervalId });
+  },
+
+  resetRoom: () => {
+    get().disconnectSocket();
+    if (get().timerIntervalId) {
+      clearInterval(get().timerIntervalId);
+    }
+    set({
+      roomId: "",
+      error: null,
+      question: null,
+      roomUsers: [],
+      authUser: null,
+      timeLeftMs: null,
+      timerIntervalId: null,
+    });
+  },
+
+  disconnectSocket: () => {
+    const socket = get().socket;
+    if (socket) {
+      socket.disconnect();
+      set({ socket: null });
+    }
   },
 
   fetchAndBroadcastQuestion: async () => {
@@ -82,9 +129,10 @@ export const useRoomStore = create((set, get) => ({
 
     try {
       const res = await axiosInstance.get("/question/random");
-      const question = res.data;
-      set({ question });
-      socket.emit("question:send", question);
+      const questionPayload = res.data; // should include startTime & duration
+      set({ question: questionPayload.question });
+      socket.emit("question:send", questionPayload);
+      get().startTimer(questionPayload.startTime, questionPayload.duration);
     } catch (error) {
       console.error("Failed to fetch question:", error.message);
     }
