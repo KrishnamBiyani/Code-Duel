@@ -10,6 +10,8 @@ export const useRoomStore = create((set, get) => ({
   error: null,
   roomUsers: [],
   socket: null,
+  question: null,
+  authUser: null, // Store authUser locally
 
   createRoom: async (userId) => {
     set({ isLoading: true, error: null });
@@ -43,15 +45,48 @@ export const useRoomStore = create((set, get) => ({
       query: { userId: user._id },
     });
 
+    set({ socket, authUser: user });
+
     socket.emit("join-room", { roomId, user });
 
     socket.on("room-users", (users) => {
       console.log("Received room users:", users);
       set({ roomUsers: users });
+
+      const currentQuestion = get().question;
+      const authUser = get().authUser;
+
+      if (users.length === 2 && !currentQuestion) {
+        const isFirstUser = users[0].user._id === authUser?._id;
+        if (isFirstUser) {
+          get().fetchAndBroadcastQuestion();
+        }
+      }
     });
 
-    set({ socket });
+    socket.on("question:send", (question) => {
+      console.log("Received question from other user:", question);
+      set({ question });
+    });
   },
 
   resetRoom: () => set({ roomId: "", error: null }),
+
+  setQuestion: (question) => {
+    set({ question });
+  },
+
+  fetchAndBroadcastQuestion: async () => {
+    const socket = get().socket;
+    if (!socket) return;
+
+    try {
+      const res = await axiosInstance.get("/question/random");
+      const question = res.data;
+      set({ question });
+      socket.emit("question:send", question);
+    } catch (error) {
+      console.error("Failed to fetch question:", error.message);
+    }
+  },
 }));

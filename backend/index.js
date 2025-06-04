@@ -6,6 +6,7 @@ import { app, server } from "./src/lib/socket.js";
 
 import authRoutes from "./src/routes/auth.route.js";
 import roomRoutes from "./src/routes/room.route.js";
+import questionRoutes from "./src/routes/question.route.js";
 import { connectDB } from "./src/lib/db.js";
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/room", roomRoutes);
+app.use("/api/question", questionRoutes);
 
 server.listen(PORT, () => {
   console.log(`server started: ${PORT}`);

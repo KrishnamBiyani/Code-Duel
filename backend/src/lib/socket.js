@@ -12,6 +12,7 @@ const io = new Server(server, {
 });
 
 const roomUsers = {};
+const roomQuestions = {}; // ✅ Store question for each room
 
 io.on("connection", (socket) => {
   console.log("new connection: ", socket.id);
@@ -24,13 +25,30 @@ io.on("connection", (socket) => {
     roomUsers[roomId].push({ socketId: socket.id, user });
     console.log(`${user.fullName} joined room ${roomId}`);
 
+    // Emit all users in the room
     io.to(roomId).emit("room-users", roomUsers[roomId]);
+
+    // ✅ If question already exists, send it to this user only
+    if (roomQuestions[roomId]) {
+      socket.emit("question:send", roomQuestions[roomId]);
+    }
+  });
+
+  // ✅ Receive and broadcast question to everyone in the room
+  socket.on("question:send", (question) => {
+    for (const roomId in roomUsers) {
+      const found = roomUsers[roomId].find((u) => u.socketId === socket.id);
+      if (found) {
+        roomQuestions[roomId] = question; // ✅ Store it
+        io.to(roomId).emit("question:send", question); // ✅ Broadcast to all
+        break;
+      }
+    }
   });
 
   socket.on("disconnect", () => {
     console.log("Disconnected:", socket.id);
 
-    // Find the room the socket was in
     for (const roomId in roomUsers) {
       const beforeCount = roomUsers[roomId].length;
 
@@ -40,19 +58,18 @@ io.on("connection", (socket) => {
 
       const afterCount = roomUsers[roomId].length;
 
-      // If someone was actually removed
       if (afterCount !== beforeCount) {
         console.log(`Updated users in room ${roomId}:`, roomUsers[roomId]);
 
-        // If room is now empty, delete it
         if (afterCount === 0) {
           delete roomUsers[roomId];
+          delete roomQuestions[roomId]; // ✅ Optionally clear the question too
           console.log(`Room ${roomId} is now empty and removed.`);
         } else {
           io.to(roomId).emit("room-users", roomUsers[roomId]);
         }
 
-        break; // Exit early — socket can only be in one room
+        break;
       }
     }
   });
