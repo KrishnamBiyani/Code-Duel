@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useRoomStore } from "../store/useRoomStore";
 import { useAuthStore } from "../store/useAuthStore";
+import CodeEditor from "../components/CodeEditor";
 
 const formatTime = (ms) => {
   if (ms < 0) ms = 0;
@@ -75,6 +76,23 @@ const Room = () => {
 
           <div className="mt-4 text-lg font-mono font-bold">
             Time Left: {formatTime(timeLeftMs)}
+          </div>
+
+          {question && (
+            <>
+              {/* existing question display code */}
+              <CodeEditor />
+            </>
+          )}
+          <div className="mt-4">
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={() =>
+                alert("Code submitted!\n\n(Backend integration pending)")
+              }
+            >
+              Submit Code
+            </button>
           </div>
         </div>
       ) : (
