@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useRoomStore } from "../store/useRoomStore";
 import { useAuthStore } from "../store/useAuthStore";
-import CodeEditor from "../components/CodeEditor";
+import CodeRunner from "../components/CodeRunner";
 
 const formatTime = (ms) => {
   if (ms < 0) ms = 0;
@@ -24,11 +24,13 @@ const Room = () => {
     if (authUser && roomId) {
       connectSocket(authUser, roomId);
     }
+
     return () => {
-      resetRoom();
+      resetRoom(); // Clean up on unmount
     };
   }, [authUser, roomId, connectSocket, resetRoom]);
 
+  // Remove duplicates based on user ID
   const uniqueRoomUsers = Array.from(
     new Map(roomUsers.map((u) => [u.user._id, u])).values()
   );
@@ -62,6 +64,9 @@ const Room = () => {
             </p>
           </div>
 
+          {/* 🎯 Single code component to run and submit */}
+          <CodeRunner question={question} />
+
           {question.examples?.length > 0 && (
             <div className="mt-4 bg-gray-100 p-3 rounded">
               <p>
@@ -78,12 +83,6 @@ const Room = () => {
             Time Left: {formatTime(timeLeftMs)}
           </div>
 
-          {question && (
-            <>
-              {/* existing question display code */}
-              <CodeEditor />
-            </>
-          )}
           <div className="mt-4">
             <button
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
