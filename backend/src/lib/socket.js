@@ -51,6 +51,13 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("declare-winner", ({ winnerId, roomId }) => {
+    console.log(`Winner declared: ${winnerId} in room ${roomId}`);
+
+    // Broadcast the winner to everyone in the room
+    io.to(roomId).emit("declare-winner", { winnerId });
+  });
+
   socket.on("disconnect", () => {
     console.log("Disconnected:", socket.id);
     for (const roomId in roomUsers) {

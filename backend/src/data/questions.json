@@ -3,8 +3,8 @@
         "questionId": "Q1",
         "title": "Two Sum",
         "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-        "inputFormat": "Array of integers, Target integer",
-        "outputFormat": "Array of two indices",
+        "inputFormat": "First line: n (number of elements)\nSecond line: n integers separated by space\nThird line: target integer",
+        "outputFormat": "Two indices separated by space",
         "constraints": {
             "nMin": 2,
             "nMax": 10000
@@ -17,33 +17,37 @@
         "examples": [
             {
                 "input": [
-                    "nums = [2,7,11,15]",
-                    "target = 9"
+                    "4",
+                    "2 7 11 15",
+                    "9"
                 ],
-                "output": "[0,1]"
+                "output": "0 1"
             }
         ],
         "testCases": [
             {
                 "input": [
-                    "nums = [2,7,11,15]",
-                    "target = 9"
+                    "4",
+                    "2 7 11 15",
+                    "9"
                 ],
-                "expected_output": "[0,1]"
+                "expected_output": "0 1"
             },
             {
                 "input": [
-                    "nums = [3,2,4]",
-                    "target = 6"
+                    "3",
+                    "3 2 4",
+                    "6"
                 ],
-                "expected_output": "[1,2]"
+                "expected_output": "1 2"
             },
             {
                 "input": [
-                    "nums = [3,3]",
-                    "target = 6"
+                    "2",
+                    "3 3",
+                    "6"
                 ],
-                "expected_output": "[0,1]"
+                "expected_output": "0 1"
             }
         ]
     },
@@ -51,7 +55,7 @@
         "questionId": "Q2",
         "title": "Reverse a String",
         "description": "Write a function that reverses a string.",
-        "inputFormat": "String s",
+        "inputFormat": "Single line string s",
         "outputFormat": "Reversed string",
         "constraints": {
             "nMin": 1,
@@ -65,7 +69,7 @@
         "examples": [
             {
                 "input": [
-                    "s = 'hello'"
+                    "hello"
                 ],
                 "output": "olleh"
             }
@@ -73,19 +77,19 @@
         "testCases": [
             {
                 "input": [
-                    "s = 'world'"
+                    "world"
                 ],
                 "expected_output": "dlrow"
             },
             {
                 "input": [
-                    "s = 'abcde'"
+                    "abcde"
                 ],
                 "expected_output": "edcba"
             },
             {
                 "input": [
-                    "s = 'a'"
+                    "a"
                 ],
                 "expected_output": "a"
             }
@@ -95,7 +99,7 @@
         "questionId": "Q3",
         "title": "Check Palindrome",
         "description": "Check whether a given string is a palindrome. Ignore case and non-alphanumeric characters.",
-        "inputFormat": "String s",
+        "inputFormat": "Single line string s",
         "outputFormat": "true or false",
         "constraints": {
             "nMin": 1,
@@ -109,7 +113,7 @@
         "examples": [
             {
                 "input": [
-                    "s = 'A man, a plan, a canal: Panama'"
+                    "A man, a plan, a canal: Panama"
                 ],
                 "output": "true"
             }
@@ -117,19 +121,19 @@
         "testCases": [
             {
                 "input": [
-                    "s = 'racecar'"
+                    "racecar"
                 ],
                 "expected_output": "true"
             },
             {
                 "input": [
-                    "s = 'hello'"
+                    "hello"
                 ],
                 "expected_output": "false"
             },
             {
                 "input": [
-                    "s = 'Madam'"
+                    "Madam"
                 ],
                 "expected_output": "true"
             }
@@ -139,7 +143,7 @@
         "questionId": "Q4",
         "title": "Fibonacci Number",
         "description": "Given an integer n, return the nth Fibonacci number. The sequence starts with 0, 1, 1, 2, 3, 5, 8...",
-        "inputFormat": "Integer n",
+        "inputFormat": "Single integer n",
         "outputFormat": "nth Fibonacci number",
         "constraints": {
             "nMin": 0,
@@ -153,7 +157,7 @@
         "examples": [
             {
                 "input": [
-                    "n = 5"
+                    "5"
                 ],
                 "output": "5"
             }
@@ -161,19 +165,19 @@
         "testCases": [
             {
                 "input": [
-                    "n = 0"
+                    "0"
                 ],
                 "expected_output": "0"
             },
             {
                 "input": [
-                    "n = 1"
+                    "1"
                 ],
                 "expected_output": "1"
             },
             {
                 "input": [
-                    "n = 7"
+                    "7"
                 ],
                 "expected_output": "13"
             }
@@ -183,7 +187,7 @@
         "questionId": "Q5",
         "title": "Maximum Element in Array",
         "description": "Given an array of integers, find the maximum element.",
-        "inputFormat": "Array of integers",
+        "inputFormat": "First line: n (number of elements)\nSecond line: n integers separated by space",
         "outputFormat": "Single integer - the max element",
         "constraints": {
             "nMin": 1,
@@ -197,7 +201,8 @@
         "examples": [
             {
                 "input": [
-                    "arr = [1, 3, 2, 9, 5]"
+                    "5",
+                    "1 3 2 9 5"
                 ],
                 "output": "9"
             }
@@ -205,19 +210,22 @@
         "testCases": [
             {
                 "input": [
-                    "arr = [10, 20, 30, 5]"
+                    "4",
+                    "10 20 30 5"
                 ],
                 "expected_output": "30"
             },
             {
                 "input": [
-                    "arr = [-1, -5, -3]"
+                    "3",
+                    "-1 -5 -3"
                 ],
                 "expected_output": "-1"
             },
             {
                 "input": [
-                    "arr = [100]"
+                    "1",
+                    "100"
                 ],
                 "expected_output": "100"
             }

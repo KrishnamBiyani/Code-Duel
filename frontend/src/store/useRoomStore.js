@@ -72,8 +72,22 @@ export const useRoomStore = create((set, get) => ({
 
     socket.on("question:send", (questionPayload) => {
       set({ question: questionPayload.question });
-      // Calculate timer start
       get().startTimer(questionPayload.startTime, questionPayload.duration);
+    });
+
+    // <--- NEW: Listen for winner declaration
+    socket.on("declare-winner", ({ winnerId }) => {
+      const authUser = get().authUser;
+      if (!authUser) return;
+
+      if (winnerId === authUser._id) {
+        alert("🎉 You won!");
+      } else {
+        alert("😞 You lost!");
+      }
+
+      // Optional: Reset room after winner declared
+      get().resetRoom();
     });
   },
 
@@ -93,7 +107,7 @@ export const useRoomStore = create((set, get) => ({
       }
     };
 
-    updateTimer(); // update immediately
+    updateTimer();
 
     const intervalId = setInterval(updateTimer, 1000);
     set({ timerIntervalId: intervalId });
@@ -135,6 +149,16 @@ export const useRoomStore = create((set, get) => ({
       get().startTimer(questionPayload.startTime, questionPayload.duration);
     } catch (error) {
       console.error("Failed to fetch question:", error.message);
+    }
+  },
+
+  // <--- NEW: emit winner declaration
+  declareWinner: () => {
+    const socket = get().socket;
+    const authUser = get().authUser;
+    const roomId = get().roomId;
+    if (socket && authUser && roomId) {
+      socket.emit("declare-winner", { winnerId: authUser._id, roomId });
     }
   },
 }));

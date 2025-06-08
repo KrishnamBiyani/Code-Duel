@@ -64,15 +64,15 @@ const Room = () => {
             </p>
           </div>
 
-          {/* 🎯 Single code component to run and submit */}
-          <CodeRunner question={question} />
+          {/* Pass authUser and roomId for submit */}
+          <CodeRunner question={question} roomId={roomId} authUser={authUser} />
 
           {question.examples?.length > 0 && (
             <div className="mt-4 bg-gray-100 p-3 rounded">
               <p>
                 <strong>Example:</strong>
               </p>
-              <pre className="whitespace-pre-wrap">
+              <pre className="whitespace-pre-wrap font-mono">
                 Input: {question.examples[0].input.join("\n")}
                 {"\n"}Output: {question.examples[0].output}
               </pre>
@@ -81,17 +81,6 @@ const Room = () => {
 
           <div className="mt-4 text-lg font-mono font-bold">
             Time Left: {formatTime(timeLeftMs)}
-          </div>
-
-          <div className="mt-4">
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              onClick={() =>
-                alert("Code submitted!\n\n(Backend integration pending)")
-              }
-            >
-              Submit Code
-            </button>
           </div>
         </div>
       ) : (

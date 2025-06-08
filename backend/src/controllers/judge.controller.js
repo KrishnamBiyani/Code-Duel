@@ -4,7 +4,7 @@ const JUDGE0_BASE_URL = "https://judge0-ce.p.rapidapi.com";
 const JUDGE0_HEADERS = {
   "Content-Type": "application/json",
   "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-  "X-RapidAPI-Key": "da79599c85msh85e810a2ee8338bp121a6ajsncaae221e125c", // get this from https://rapidapi.com/judge0-official/api/judge0-ce
+  "X-RapidAPI-Key": "4a31d39e9amsh151c6a135bccf01p1d1ef9jsn65c004c85f33", // get this from https://rapidapi.com/judge0-official/api/judge0-ce
 };
 
 export const runCode = async (req, res) => {
