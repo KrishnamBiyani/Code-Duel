@@ -6,6 +6,7 @@ import Room from "./pages/Room";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -21,20 +22,21 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div className="pt-16">
+      {/* <Navbar /> */}
+      <div className="">
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route
-            path="/"
+            path="/home"
             element={authUser ? <Home /> : <Navigate to="/signup" />}
           />
           <Route
             path="/signup"
-            element={!authUser ? <SignUp /> : <Navigate to="/" />}
+            element={!authUser ? <SignUp /> : <Navigate to="/home" />}
           />
           <Route
             path="/signin"
-            element={!authUser ? <SignIn /> : <Navigate to="/" />}
+            element={!authUser ? <SignIn /> : <Navigate to="/home" />}
           />
           <Route
             path="/room/:roomId"
