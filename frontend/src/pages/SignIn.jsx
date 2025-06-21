@@ -1,15 +1,3 @@
-{
-  /* <div className="realtive hidden md:flex flex-1 items-center justify-center bg-gray-900">
-        <img
-          src={samurai}
-          alt="Samurai"
-          className="absolute bottom-0 max-h-[100vh] select-none"
-          draggable={false}
-          style={{ userSelect: "none" }}
-        />
-      </div> */
-}
-
 import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
@@ -35,8 +23,8 @@ const SignIn = () => {
       {/* Left Side - Form */}
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="w-full max-w-md">
-          <h2 className="text-4xl font-serif font-bold mb-8 text-center">
-            Sign In to DSA Duel
+          <h2 className="text-4xl font-serif font-bold mb-8 text-center drop-shadow-[0_0_10px_#dc2626]">
+            Sign In to <span className="text-red-600">DSA Duel</span>
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -45,13 +33,13 @@ const SignIn = () => {
               <label className="label">
                 <span className="label-text font-medium">Email</span>
               </label>
-              <div className="relative border rounded-md">
+              <div className="relative border rounded-md border-zinc-700 focus-within:ring-2 focus-within:ring-red-600">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="size-6 text-white/60" />
                 </div>
                 <input
                   type="email"
-                  className="input input-bordered w-full pl-12 h-14 text-lg bg-black text-white placeholder-white/70 rounded-md"
+                  className="w-full pl-12 h-14 text-lg bg-black text-white placeholder-white/70 rounded-md outline-none"
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) =>
@@ -67,13 +55,13 @@ const SignIn = () => {
               <label className="label">
                 <span className="label-text font-medium">Password</span>
               </label>
-              <div className="relative border rounded-md">
+              <div className="relative border rounded-md border-zinc-700 focus-within:ring-2 focus-within:ring-red-600">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="size-6 text-white/60" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="input input-bordered w-full pl-12 h-14 text-lg bg-black text-white placeholder-white/70 rounded-md"
+                  className="w-full pl-12 h-14 text-lg bg-black text-white placeholder-white/70 rounded-md outline-none"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) =>
@@ -83,7 +71,7 @@ const SignIn = () => {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/60"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/60 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -95,7 +83,7 @@ const SignIn = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn btn-primary w-full border border-white rounded-md hover:bg-white hover:text-black transition duration-300 font-serif font-semibold h-14 text-lg"
+              className="w-full h-14 bg-red-700 hover:bg-red-600 disabled:bg-red-900 rounded-md text-lg font-semibold font-serif transition-all shadow-[0_0_10px_#dc2626] cursor-pointer"
               disabled={isSigningIn}
             >
               {isSigningIn ? (
@@ -104,7 +92,7 @@ const SignIn = () => {
                   <span>Loading...</span>
                 </div>
               ) : (
-                "Login"
+                "⚔️ Login"
               )}
             </button>
           </form>
@@ -122,11 +110,11 @@ const SignIn = () => {
       </div>
 
       {/* Right Side - Samurai Image */}
-      <div className="relative hidden md:flex flex-1 items-center justify-center bg-gray-900">
+      <div className="relative hidden md:flex flex-1 items-center justify-center bg-black">
         <img
           src={samurai}
           alt="Samurai"
-          className="absolute bottom-0 max-h-[100vh] select-none"
+          className="absolute bottom-0 max-h-[100vh] drop-shadow-[0_0_60px_#dc2626] select-none"
           draggable={false}
           style={{ userSelect: "none" }}
         />

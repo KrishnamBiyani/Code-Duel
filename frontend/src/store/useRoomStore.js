@@ -74,21 +74,6 @@ export const useRoomStore = create((set, get) => ({
       set({ question: questionPayload.question });
       get().startTimer(questionPayload.startTime, questionPayload.duration);
     });
-
-    // <--- NEW: Listen for winner declaration
-    socket.on("declare-winner", ({ winnerId }) => {
-      const authUser = get().authUser;
-      if (!authUser) return;
-
-      if (winnerId === authUser._id) {
-        alert("🎉 You won!");
-      } else {
-        alert("😞 You lost!");
-      }
-
-      // Optional: Reset room after winner declared
-      get().resetRoom();
-    });
   },
 
   startTimer: (startTime, duration) => {
@@ -143,7 +128,7 @@ export const useRoomStore = create((set, get) => ({
 
     try {
       const res = await axiosInstance.get("/question/random");
-      const questionPayload = res.data; // should include startTime & duration
+      const questionPayload = res.data;
       set({ question: questionPayload.question });
       socket.emit("question:send", questionPayload);
       get().startTimer(questionPayload.startTime, questionPayload.duration);
@@ -152,7 +137,6 @@ export const useRoomStore = create((set, get) => ({
     }
   },
 
-  // <--- NEW: emit winner declaration
   declareWinner: () => {
     const socket = get().socket;
     const authUser = get().authUser;

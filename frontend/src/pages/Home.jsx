@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import samurai from "../assets/samurai.png";
 
 export default function Home() {
-  const { authUser } = useAuthStore();
+  const { authUser, logout } = useAuthStore();
   const { createRoom, joinRoom, isLoading, error } = useRoomStore();
   const [joinRoomId, setJoinRoomId] = useState("");
   const navigate = useNavigate();
@@ -22,8 +22,21 @@ export default function Home() {
     if (success) navigate(`/room/${joinRoomId.trim()}`);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/signin");
+  };
+
   return (
-    <div className="min-h-screen flex bg-black text-white">
+    <div className="min-h-screen flex bg-black text-white relative">
+      {/* Logout Button */}
+      <button
+        onClick={handleLogout}
+        className="absolute top-6 left-12 px-4 py-2 text-sm font-semibold text-white border border-red-700 rounded-md hover:bg-red-700 hover:text-white transition-all shadow-[0_0_10px_#dc2626] z-20"
+      >
+        Logout
+      </button>
+
       {/* Left Side */}
       <div className="flex flex-col justify-center flex-1 px-12 max-w-lg">
         <h1 className="text-5xl font-extrabold mb-4 font-serif text-white drop-shadow-[0_0_10px_#dc2626]">
@@ -39,7 +52,7 @@ export default function Home() {
         <button
           onClick={handleCreateRoom}
           disabled={isLoading}
-          className="w-full py-3 mb-6 bg-red-700 hover:bg-red-600 disabled:bg-red-800 rounded-lg font-semibold transition-all shadow-[0_0_5px_#dc2626]"
+          className="w-full py-3 mb-6 bg-red-700 hover:bg-red-600 disabled:bg-red-800 rounded-lg font-semibold transition-all shadow-[0_0_5px_#dc2626] cursor-pointer"
         >
           {isLoading ? "Creating Room..." : "⚔️ Create Duel Room"}
         </button>
@@ -55,7 +68,7 @@ export default function Home() {
           <button
             onClick={handleJoinRoom}
             disabled={isLoading}
-            className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-red-800 rounded-lg font-semibold transition-all shadow-[0_0_5px_#dc2626]"
+            className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-red-800 rounded-lg font-semibold transition-all shadow-[0_0_5px_#dc2626] cursor-pointer"
           >
             {isLoading ? "Joining..." : "Join"}
           </button>

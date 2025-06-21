@@ -2,8 +2,34 @@ import { create } from "zustand";
 import axios from "axios";
 import { useRoomStore } from "./useRoomStore";
 
+const getLanguageId = (lang) => {
+  switch (lang) {
+    case "cpp":
+      return 54; // C++ (G++)
+    case "python":
+      return 71; // Python 3
+    case "javascript":
+      return 63; // Node.js
+    default:
+      return 54; // fallback to C++
+  }
+};
+
+const getDefaultCode = (lang) => {
+  switch (lang) {
+    case "cpp":
+      return "// Write your C++ code here";
+    case "python":
+      return "# Write your Python code here";
+    case "javascript":
+      return "// Write your JavaScript code here";
+    default:
+      return "";
+  }
+};
+
 export const useCodeStore = create((set, get) => ({
-  code: "// Write your code here",
+  code: getDefaultCode("cpp"),
   setCode: (code) => set({ code }),
 
   isRunning: false,
@@ -21,6 +47,12 @@ export const useCodeStore = create((set, get) => ({
   submissionMessage: null,
   setSubmissionMessage: (message) => set({ submissionMessage: message }),
 
+  winnerId: null,
+  setWinnerId: (id) => set({ winnerId: id }),
+
+  language: "cpp", // default
+  setLanguage: (lang) => set({ language: lang, code: getDefaultCode(lang) }),
+
   // Run predefined test cases
   handleRun: async (question) => {
     set({ isRunning: true, results: [] });
@@ -30,7 +62,7 @@ export const useCodeStore = create((set, get) => ({
     for (const [i, test] of testCases.entries()) {
       try {
         const res = await axios.post("http://localhost:5050/api/judge/run", {
-          language_id: 54, // C++ language id for judge0
+          language_id: getLanguageId(get().language), // C++ language id for judge0
           source_code: get().code,
           stdin: test.input.join("\n"),
         });
@@ -82,7 +114,7 @@ export const useCodeStore = create((set, get) => ({
 
     try {
       const res = await axios.post("http://localhost:5050/api/judge/run", {
-        language_id: 54,
+        language_id: getLanguageId(get().language),
         source_code: get().code,
         stdin: get().customInput,
       });
@@ -114,7 +146,7 @@ export const useCodeStore = create((set, get) => ({
     for (const [i, test] of testCases.entries()) {
       try {
         const res = await axios.post("http://localhost:5050/api/judge/run", {
-          language_id: 54,
+          language_id: getLanguageId(get().language),
           source_code: get().code,
           stdin: test.input.join("\n"),
         });
