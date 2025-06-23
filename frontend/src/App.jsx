@@ -5,8 +5,8 @@ import SignUp from "./pages/SignUp";
 import Room from "./pages/Room";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
-import Navbar from "./components/Navbar";
 import LandingPage from "./pages/LandingPage";
+import { Loader2 } from "lucide-react";
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -16,9 +16,16 @@ function App() {
   }, [checkAuth]);
 
   if (isCheckingAuth) {
-    return <div className="text-center mt-10 text-lg">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-black">
+        <div className="flex items-center gap-3 text-red-600 text-xl font-semibold">
+          <Loader2 className="h-10 w-10 text-red-600 animate-spin" />
+          Verifying blood pact...
+        </div>
+      </div>
+    );
   }
-  console.log(authUser);
+  //console.log(authUser);
 
   return (
     <>

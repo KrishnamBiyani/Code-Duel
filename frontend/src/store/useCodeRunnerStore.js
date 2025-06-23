@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import { useRoomStore } from "./useRoomStore";
+import { axiosInstance } from "../lib/axios";
 
 const getLanguageId = (lang) => {
   switch (lang) {
@@ -53,6 +54,14 @@ export const useCodeStore = create((set, get) => ({
   language: "cpp", // default
   setLanguage: (lang) => set({ language: lang, code: getDefaultCode(lang) }),
 
+  isRunningTests: false,
+  isSubmitting: false,
+  isRunningCustomTest: false,
+
+  setIsRunningTests: (value) => set({ isRunningTests: value }),
+  setIsSubmitting: (value) => set({ isSubmitting: value }),
+  setIsRunningCustomTest: (value) => set({ isRunningCustomTest: value }),
+
   // Run predefined test cases
   handleRun: async (question) => {
     set({ isRunning: true, results: [] });
@@ -61,7 +70,7 @@ export const useCodeStore = create((set, get) => ({
 
     for (const [i, test] of testCases.entries()) {
       try {
-        const res = await axios.post("http://localhost:5050/api/judge/run", {
+        const res = await axiosInstance.post("/judge/run", {
           language_id: getLanguageId(get().language), // C++ language id for judge0
           source_code: get().code,
           stdin: test.input.join("\n"),
@@ -113,7 +122,7 @@ export const useCodeStore = create((set, get) => ({
     set({ isRunning: true, customResult: null });
 
     try {
-      const res = await axios.post("http://localhost:5050/api/judge/run", {
+      const res = await axiosInstance.post("/judge/run", {
         language_id: getLanguageId(get().language),
         source_code: get().code,
         stdin: get().customInput,
@@ -145,7 +154,7 @@ export const useCodeStore = create((set, get) => ({
 
     for (const [i, test] of testCases.entries()) {
       try {
-        const res = await axios.post("http://localhost:5050/api/judge/run", {
+        const res = await axiosInstance.post("/judge/run", {
           language_id: getLanguageId(get().language),
           source_code: get().code,
           stdin: test.input.join("\n"),
@@ -197,7 +206,7 @@ export const useCodeStore = create((set, get) => ({
 
     if (allPassed) {
       try {
-        await axios.post("http://localhost:5050/api/submit", {
+        await axiosInstance.post("/submit", {
           code: get().code,
           questionId: question.id,
           roomId,

@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { io } from "socket.io-client";
 
-const BASE_URL = "http://localhost:5050";
+const BASE_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:5050" : "/";
 
 export const useRoomStore = create((set, get) => ({
   roomId: "",

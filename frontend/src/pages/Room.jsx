@@ -109,7 +109,6 @@ const Room = () => {
         </div>
 
         {/* Grouped Participants + Timer */}
-        {/* Grouped Participants + Timer */}
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           {/* Participants Box */}
           <div className="bg-gradient-to-br from-emerald-900 to-emerald-700 border border-emerald-600 rounded-xl px-6 py-4 flex flex-wrap min-w-0 shadow-lg">

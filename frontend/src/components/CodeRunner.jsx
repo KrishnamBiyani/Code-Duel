@@ -10,7 +10,12 @@ const CodeRunner = ({ question, roomId, authUser }) => {
   const {
     code,
     setCode,
-    isRunning,
+    isRunningTests,
+    setIsRunningTests,
+    isSubmitting,
+    setIsSubmitting,
+    isRunningCustomTest,
+    setIsRunningCustomTest,
     results,
     customInput,
     setCustomInput,
@@ -29,7 +34,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
     if (!socket || !authUser) return;
 
     const handleDeclareWinner = ({ winnerId }) => {
-      setWinnerId(winnerId); // update Zustand instead of alert
+      setWinnerId(winnerId);
     };
 
     socket.on("declare-winner", handleDeclareWinner);
@@ -71,7 +76,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto  p-2 bg-[#1a1c23] rounded-lg shadow-lg">
+      <div className="max-w-4xl mx-auto p-2 bg-[#1a1c23] rounded-lg shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
           <h2 className="text-2xl font-bold text-pink-400">Code Editor</h2>
 
@@ -94,28 +99,32 @@ const CodeRunner = ({ question, roomId, authUser }) => {
 
         <Editor
           height="320px"
-          language={language} // <-- dynamically updates language
+          language={language}
           value={code}
           onChange={(value) => {
-            if (!winnerId) setCode(value); // Don't allow editing after game ends
+            if (!winnerId) setCode(value);
           }}
           options={{
             minimap: { enabled: false },
             fontSize: 16,
             fontFamily: "'Fira Code', monospace",
             automaticLayout: true,
-            theme: "vs-dark", // you can change to "light" if needed
+            theme: "vs-dark",
           }}
         />
 
         <div className="flex flex-wrap gap-4 mt-5">
           <button
-            className={`${buttonBaseStyles} bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/40`}
-            onClick={() => handleRun(question, language)}
-            disabled={isRunning}
-            aria-label="Run tests"
+            className={`${buttonBaseStyles} bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/40 cursor-pointer`}
+            onClick={() => {
+              setIsRunningTests(true);
+              handleRun(question, language).finally(() =>
+                setIsRunningTests(false)
+              );
+            }}
+            disabled={isRunningTests}
           >
-            {isRunning ? (
+            {isRunningTests ? (
               <>
                 <svg
                   className="animate-spin mr-2 h-5 w-5 text-white"
@@ -145,14 +154,16 @@ const CodeRunner = ({ question, roomId, authUser }) => {
           </button>
 
           <button
-            className={`${buttonBaseStyles} bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-500/40`}
-            onClick={() =>
-              handleSubmit({ question, roomId, authUser, language })
-            }
-            disabled={isRunning}
-            aria-label="Submit code"
+            className={`${buttonBaseStyles} bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-500/40 cursor-pointer`}
+            onClick={() => {
+              setIsSubmitting(true);
+              handleSubmit({ question, roomId, authUser, language }).finally(
+                () => setIsSubmitting(false)
+              );
+            }}
+            disabled={isSubmitting}
           >
-            {isRunning ? (
+            {isSubmitting ? (
               <>
                 <svg
                   className="animate-spin mr-2 h-5 w-5 text-white"
@@ -235,8 +246,6 @@ const CodeRunner = ({ question, roomId, authUser }) => {
               <div
                 key={idx}
                 className="bg-gray-900 p-4 rounded mb-4 border border-gray-700"
-                role="region"
-                aria-label={`Test case ${r.index}`}
               >
                 <p className="mb-2">
                   <strong>Test Case {r.index}:</strong>{" "}
@@ -273,16 +282,19 @@ const CodeRunner = ({ question, roomId, authUser }) => {
             placeholder="Enter custom input"
             value={customInput}
             onChange={(e) => setCustomInput(e.target.value)}
-            disabled={isRunning}
-            aria-label="Custom test case input"
+            disabled={isRunningCustomTest}
           />
           <button
-            className={`${buttonBaseStyles} bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-500/40 mt-2`}
-            onClick={handleRunCustomTest}
-            disabled={isRunning}
-            aria-label="Run custom test"
+            className={`${buttonBaseStyles} bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-500/40 mt-2 cursor-pointer`}
+            onClick={() => {
+              setIsRunningCustomTest(true);
+              handleRunCustomTest().finally(() =>
+                setIsRunningCustomTest(false)
+              );
+            }}
+            disabled={isRunningCustomTest}
           >
-            {isRunning ? (
+            {isRunningCustomTest ? (
               <>
                 <svg
                   className="animate-spin mr-2 h-5 w-5 text-white"
@@ -312,12 +324,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
           </button>
 
           {customResult && (
-            <div
-              className="mt-5 p-3 border border-gray-600 rounded bg-gray-900 text-white whitespace-pre-wrap font-mono"
-              role="region"
-              aria-live="polite"
-              aria-atomic="true"
-            >
+            <div className="mt-5 p-3 border border-gray-600 rounded bg-gray-900 text-white whitespace-pre-wrap font-mono">
               <p className="font-semibold mb-1">Output:</p>
               <pre>{customResult}</pre>
             </div>
