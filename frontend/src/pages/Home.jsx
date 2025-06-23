@@ -32,7 +32,7 @@ export default function Home() {
       {/* Logout Button */}
       <button
         onClick={handleLogout}
-        className="absolute top-6 left-12 px-4 py-2 text-sm font-semibold text-white border border-red-700 rounded-md hover:bg-red-700 hover:text-white transition-all shadow-[0_0_10px_#dc2626] z-20"
+        className="absolute top-6 left-12 px-4 py-2 text-sm font-semibold text-white border border-red-700 rounded-md hover:bg-red-700 hover:text-white transition-all shadow-[0_0_10px_#dc2626] z-20 cursor-pointer"
       >
         Logout
       </button>
