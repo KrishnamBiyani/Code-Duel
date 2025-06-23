@@ -4,6 +4,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { app, server } from "./src/lib/socket.js";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import authRoutes from "./src/routes/auth.route.js";
 import roomRoutes from "./src/routes/room.route.js";
@@ -21,19 +25,19 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // In production, Render will handle this
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
 
-// Routes
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/judge", judgeRoutes);
 app.use("/api/submit", submitRoutes);
 
-// Serve frontend in production
+// Serve frontend build in production
 if (process.env.NODE_ENV === "production") {
   const frontendPath = path.resolve(__dirname, "../../frontend/dist");
   app.use(express.static(frontendPath));
