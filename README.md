@@ -1,24 +1,24 @@
-# 🧠 DSA Duel
+#  DSA Duel
 
 A real-time competitive coding platform where two users are matched to solve a random DSA (Data Structures & Algorithms) problem under a timer. Built using the MERN stack with real-time communication via Socket.IO and secure code execution using Judge0 API.
 
 ---
 
-## 🚀 Features
+##  Features
 
-- 🔐 JWT-based authentication (Sign Up, Sign In, Logout)
-- 🤝 Create or join a private room via unique Room ID
-- 📦 Random DSA problem assignment per room
-- ⏱️ Countdown timer (e.g. 10 minutes per match)
-- ✅ Code submission with test case validation using Judge0 API
-- 🏆 Real-time winner detection when all test cases pass
-- 🗃️ Zustand for frontend state management
-- ⚡ WebSockets (Socket.IO) for real-time communication
-- 🎯 UI built with Tailwind CSS
+-  JWT-based authentication (Sign Up, Sign In, Logout)
+-  Create or join a private room via unique Room ID
+-  Random DSA problem assignment per room
+-  Countdown timer (e.g. 10 minutes per match)
+-  Code submission with test case validation using Judge0 API
+-  Real-time winner detection when all test cases pass
+-  Zustand for frontend state management
+-  WebSockets (Socket.IO) for real-time communication
+-  UI built with Tailwind CSS
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 **Frontend**
 - React + Vite
@@ -35,7 +35,7 @@ A real-time competitive coding platform where two users are matched to solve a r
 
 ---
 
-## 🧪 How It Works
+##  How It Works
 
 1. **Authentication:** Users sign in via email/password. Auth is managed via JWT tokens stored in cookies.
 2. **Room System:** One user creates a room and shares the room ID. Second user joins using the ID.
@@ -46,7 +46,7 @@ A real-time competitive coding platform where two users are matched to solve a r
 
 ---
 
-## 🧑‍💻 Running Locally
+##  Running Locally
 
 ### 1. Clone the repository
 
