@@ -10,7 +10,11 @@ export const randomQuestion = async (req, res) => {
       return res.status(401).json({ message: "No questions found" });
     }
 
-    res.status(201).json(question);
+    res.status(200).json({
+      question,
+      startTime: Date.now(),
+      duration: 10 * 60 * 1000,
+    });
   } catch (error) {
     console.log("Error in question controller: ", error);
     res.status(500).json({ message: "Server error" });
