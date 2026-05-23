@@ -72,8 +72,16 @@ export const useRoomStore = create((set, get) => ({
     });
 
     socket.on("question:send", (questionPayload) => {
-      set({ question: questionPayload.question });
-      get().startTimer(questionPayload.startTime, questionPayload.duration);
+      const question =
+        questionPayload?.question?.question ||
+        questionPayload?.question ||
+        questionPayload;
+
+      set({ question });
+
+      if (questionPayload?.startTime && questionPayload?.duration) {
+        get().startTimer(questionPayload.startTime, questionPayload.duration);
+      }
     });
   },
 
@@ -129,10 +137,13 @@ export const useRoomStore = create((set, get) => ({
 
     try {
       const res = await axiosInstance.get("/question/random");
-      const questionPayload = res.data;
-      set({ question: questionPayload.question });
-      socket.emit("question:send", questionPayload);
-      get().startTimer(questionPayload.startTime, questionPayload.duration);
+      const question = res.data?.question || res.data;
+
+      if (!question) {
+        throw new Error("Question payload missing question data");
+      }
+
+      socket.emit("question:send", question);
     } catch (error) {
       console.error("Failed to fetch question:", error.message);
     }

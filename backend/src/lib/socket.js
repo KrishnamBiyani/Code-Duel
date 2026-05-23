@@ -34,13 +34,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("question:send", (question) => {
+  socket.on("question:send", (questionData) => {
     for (const roomId in roomUsers) {
       const found = roomUsers[roomId].find((u) => u.socketId === socket.id);
       if (found) {
         const startTime = Date.now();
         const payload = {
-          question,
+          question: questionData?.question || questionData,
           startTime,
           duration: QUESTION_DURATION_MS,
         };
