@@ -29,3 +29,13 @@ backend/.env
 # AI / Repomix Output
 repomix-output.xml
 repomix-output.txt
+
+# RAG service
+rag-service/.env
+rag-service/__pycache__/
+rag-service/app/__pycache__/
+rag-service/app/services/__pycache__/
+rag-service/.venv/
+rag-service/chroma_db/
+*.pyc
+__pycache__/

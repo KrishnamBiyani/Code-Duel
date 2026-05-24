@@ -34,11 +34,14 @@ def health_check() -> dict[str, str]:
 
 @app.post("/ingest", response_model=IngestResponse)
 def ingest(request: IngestRequest) -> IngestResponse:
-    chunks = chunk_text(
-        text=request.text,
-        chunk_size=settings.chunk_size,
-        chunk_overlap=settings.chunk_overlap,
-    )
+    if request.metadata.get("pre_chunked"):
+        chunks = [request.text] if request.text.strip() else []
+    else:
+        chunks = chunk_text(
+            text=request.text,
+            chunk_size=settings.chunk_size,
+            chunk_overlap=settings.chunk_overlap,
+        )
 
     if not chunks:
         raise HTTPException(status_code=400, detail="No ingestible text provided.")
