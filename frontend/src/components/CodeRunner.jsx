@@ -2,7 +2,15 @@ import { useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import { useRoomStore } from "../store/useRoomStore";
 import { useCodeStore } from "../store/useCodeRunnerStore";
-import { ChevronDown } from "lucide-react";
+import {
+  ArrowLeft,
+  Brain,
+  ChevronDown,
+  CircleCheck,
+  Crown,
+  Swords,
+} from "lucide-react";
+import AIChat from "./AIChat";
 
 const CodeRunner = ({ question, roomId, authUser }) => {
   const { socket, timeLeftMs } = useRoomStore();
@@ -33,8 +41,8 @@ const CodeRunner = ({ question, roomId, authUser }) => {
   useEffect(() => {
     if (!socket || !authUser) return;
 
-    const handleDeclareWinner = ({ winnerId }) => {
-      setWinnerId(winnerId);
+    const handleDeclareWinner = ({ winnerId: declaredWinnerId }) => {
+      setWinnerId(declaredWinnerId);
     };
 
     socket.on("declare-winner", handleDeclareWinner);
@@ -53,36 +61,123 @@ const CodeRunner = ({ question, roomId, authUser }) => {
   const buttonBaseStyles =
     "flex items-center justify-center px-4 py-2 rounded text-white font-semibold transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed";
 
+  const duelOutcome =
+    winnerId === "draw"
+      ? {
+          title: "Draw",
+          headline: "Time's up. Nobody finished in time.",
+          icon: Swords,
+        }
+      : winnerId === authUser._id
+      ? {
+          title: "Victory",
+          headline: "You solved it first. Now analyze what made the solution work.",
+          icon: Crown,
+        }
+      : {
+          title: "Defeat",
+          headline: "The duel is over. Use the assistant to understand the better path.",
+          icon: Brain,
+        };
+
+  const OutcomeIcon = duelOutcome.icon;
+  const isSubmissionSuccess =
+    submissionMessage?.includes("All test cases passed") ||
+    submissionMessage?.includes("successful");
+
   return (
     <>
       {winnerId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              {winnerId === "draw"
-                ? "⏰ Time’s Up! It’s a Draw!"
-                : winnerId === authUser._id
-                ? "🎉 You Won!"
-                : "👎 You Lost!"}
-            </h1>
-            <p className="text-lg text-gray-300">The match has ended.</p>
-            <a
-              href="/"
-              className="inline-block mt-4 px-6 py-2 bg-pink-600 text-white font-semibold rounded hover:bg-pink-700 transition"
-            >
-              Go Back to Home
-            </a>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 px-4 py-8">
+          <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[0.85fr_1.35fr]">
+            <div className="rounded-2xl border border-gray-700 bg-[#1a1c23] p-6 shadow-[0_0_10px_#dc2626]">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-red-700 bg-black shadow-[0_0_10px_#dc2626]">
+                <OutcomeIcon className="h-8 w-8 text-red-600" />
+              </div>
+
+              <p className="mb-2 text-sm uppercase tracking-[0.2em] text-white/60">
+                Duel Result
+              </p>
+              <h1 className="mb-3 font-serif text-5xl font-bold text-white">
+                {duelOutcome.title}
+              </h1>
+              <p className="mb-6 text-base leading-7 text-white/80">
+                {duelOutcome.headline}
+              </p>
+
+              <div className="mb-6 rounded-2xl border border-gray-700 bg-[#0f1117] p-5">
+                <p className="mb-2 text-sm uppercase tracking-[0.18em] text-white/60">
+                  Problem Recap
+                </p>
+                <h2 className="font-serif text-2xl font-semibold text-white">
+                  {question?.title || "DSA Problem"}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-white/80">
+                  {question?.description ||
+                    "Open the analysis assistant to review the problem and discuss the solution strategy."}
+                </p>
+              </div>
+
+              <div className="mb-6 space-y-3">
+                <div className="flex items-start gap-3 rounded-xl border border-gray-700 bg-black p-4">
+                  <CircleCheck className="mt-0.5 h-5 w-5 text-red-600" />
+                  <div>
+                    <p className="font-semibold text-white">
+                      Post-match analysis unlocked
+                    </p>
+                    <p className="text-sm leading-6 text-white/70">
+                      Ask for brute force vs optimal approaches, dry runs, edge
+                      cases, or time complexity.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="/"
+                className="inline-flex items-center gap-2 rounded-lg bg-red-700 px-5 py-3 font-semibold text-white transition-colors hover:bg-red-600 shadow-[0_0_10px_#dc2626]"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Go Back to Home
+              </a>
+            </div>
+
+            <div className="rounded-2xl border border-gray-700 bg-[#1a1c23] p-4 shadow-[0_0_10px_#dc2626]">
+              <div className="mb-4 flex items-center gap-3 border-b border-gray-700 px-2 pb-4">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-red-700 bg-black">
+                  <Brain className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-2xl font-bold text-white">
+                    Let's analyze the problem
+                  </h3>
+                  <p className="text-sm text-white/80">
+                    Review the solution, tradeoffs, and better approaches
+                  </p>
+                </div>
+              </div>
+
+              <AIChat
+                questionTitle={question?.title || "General"}
+                questionDescription={question?.description || "DSA prep"}
+                title="Analysis Assistant"
+                subtitle="Ask why the solution worked, where it failed, or how to optimize it"
+                emptyMessage="Ask why the solution worked, where it failed, or how to optimize it"
+              />
+            </div>
           </div>
         </div>
       )}
 
       <div className="max-w-4xl mx-auto p-2 bg-[#1a1c23] rounded-lg shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-          <h2 className="text-2xl font-bold text-pink-400">Code Editor</h2>
+          <h2 className="text-2xl font-bold text-red-600 font-serif">
+            Code Editor
+          </h2>
 
           <div className="relative w-32">
             <select
-              className="appearance-none w-full bg-gray-800 text-white px-3 py-2 pr-10 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-400 transition duration-150"
+              className="appearance-none w-full bg-black text-white px-3 py-2 pr-10 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-600 transition duration-150"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
             >
@@ -91,7 +186,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
               <option value="javascript">JavaScript</option>
             </select>
             <ChevronDown
-              className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-white/80"
               size={18}
             />
           </div>
@@ -115,7 +210,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
 
         <div className="flex flex-wrap gap-4 mt-5">
           <button
-            className={`${buttonBaseStyles} bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/40 cursor-pointer`}
+            className={`${buttonBaseStyles} bg-red-700 hover:bg-red-600 shadow-[0_0_10px_#dc2626] cursor-pointer`}
             onClick={() => {
               setIsRunningTests(true);
               handleRun(question, language).finally(() =>
@@ -154,7 +249,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
           </button>
 
           <button
-            className={`${buttonBaseStyles} bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-500/40 cursor-pointer`}
+            className={`${buttonBaseStyles} bg-red-700 hover:bg-red-600 shadow-[0_0_10px_#dc2626] cursor-pointer`}
             onClick={() => {
               setIsSubmitting(true);
               handleSubmit({ question, roomId, authUser, language }).finally(
@@ -196,88 +291,54 @@ const CodeRunner = ({ question, roomId, authUser }) => {
         {submissionMessage && (
           <div
             role="alert"
-            className={`mt-6 p-4 rounded border ${
-              submissionMessage.startsWith("✅")
-                ? "bg-green-100 text-green-800 border-green-300"
-                : "bg-red-100 text-red-800 border-red-300"
-            } flex items-center gap-2`}
+            className={`mt-6 flex items-center gap-2 rounded border p-4 ${
+              isSubmissionSuccess
+                ? "border-red-700 bg-[#0f1117] text-white"
+                : "border-gray-700 bg-[#0f1117] text-white"
+            }`}
           >
-            {submissionMessage.startsWith("✅") ? (
-              <svg
-                className="h-6 w-6 text-green-600 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="h-6 w-6 text-red-600 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            )}
             <span>{submissionMessage}</span>
           </div>
         )}
 
         {results.length > 0 && (
           <div className="mt-8">
-            <h3 className="font-bold text-xl mb-4 text-pink-400">
+            <h3 className="font-bold text-xl mb-4 text-red-600 font-serif">
               Test Results:
             </h3>
             {results.map((r, idx) => (
               <div
                 key={idx}
-                className="bg-gray-900 p-4 rounded mb-4 border border-gray-700"
+                className="bg-black p-4 rounded mb-4 border border-gray-700"
               >
                 <p className="mb-2">
                   <strong>Test Case {r.index}:</strong>{" "}
                   <span
                     className={
-                      r.status.startsWith("✅")
-                        ? "text-green-400"
-                        : "text-red-400"
+                      r.status.includes("Passed") ? "text-white" : "text-red-600"
                     }
                   >
                     {r.status}
                   </span>
                 </p>
-                <pre className="text-sm whitespace-pre-wrap font-mono leading-relaxed">
-                  <strong>Input:</strong> {r.input}
+                <pre className="text-sm whitespace-pre-wrap font-mono leading-relaxed text-white/80">
+                  <strong className="text-white">Input:</strong> {r.input}
                   {"\n"}
-                  <strong>Expected:</strong> {r.expected}
+                  <strong className="text-white">Expected:</strong> {r.expected}
                   {"\n"}
-                  <strong>Output:</strong> {r.actual}
+                  <strong className="text-white">Output:</strong> {r.actual}
                 </pre>
               </div>
             ))}
           </div>
         )}
 
-        {/* Custom Test Case Runner */}
         <div className="mt-10 border border-gray-700 p-5 rounded shadow-lg bg-[#111214]">
-          <h3 className="font-bold mb-3 text-pink-400 text-lg">
+          <h3 className="font-bold mb-3 text-red-600 text-lg font-serif">
             Run Custom Test Case
           </h3>
           <textarea
-            className="w-full p-3 border border-gray-600 rounded text-sm font-mono resize-none bg-[#1e2128] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="w-full p-3 border border-gray-700 rounded text-sm font-mono resize-none bg-black text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
             rows={4}
             placeholder="Enter custom input"
             value={customInput}
@@ -285,7 +346,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
             disabled={isRunningCustomTest}
           />
           <button
-            className={`${buttonBaseStyles} bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-500/40 mt-2 cursor-pointer`}
+            className={`${buttonBaseStyles} bg-red-700 hover:bg-red-600 shadow-[0_0_10px_#dc2626] mt-2 cursor-pointer`}
             onClick={() => {
               setIsRunningCustomTest(true);
               handleRunCustomTest().finally(() =>
@@ -324,7 +385,7 @@ const CodeRunner = ({ question, roomId, authUser }) => {
           </button>
 
           {customResult && (
-            <div className="mt-5 p-3 border border-gray-600 rounded bg-gray-900 text-white whitespace-pre-wrap font-mono">
+            <div className="mt-5 p-3 border border-gray-700 rounded bg-black text-white whitespace-pre-wrap font-mono">
               <p className="font-semibold mb-1">Output:</p>
               <pre>{customResult}</pre>
             </div>
