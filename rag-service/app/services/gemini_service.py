@@ -21,6 +21,8 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
     return [embedding.values for embedding in result.embeddings]
 
 
+import time
+
 def generate_grounded_answer(
   *,
   message: str,
@@ -52,8 +54,16 @@ User message:
 {message}
 """.strip()
 
-    response = client.models.generate_content(
-        model=settings.llm_model,
-        contents=prompt,
-    )
-    return response.text or "I could not generate a response."
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model=settings.llm_model,
+                contents=prompt,
+            )
+            return response.text or "I could not generate a response."
+        except Exception as e:
+            if "503" in str(e) and attempt < 2:
+                print(f"503 error, retrying in 10 seconds (attempt {attempt + 1}/3)...")
+                time.sleep(10)
+            else:
+                return "AI service is temporarily unavailable. Please try again in a moment."

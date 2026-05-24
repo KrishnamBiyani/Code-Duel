@@ -14,6 +14,7 @@ import roomRoutes from "./src/routes/room.route.js";
 import questionRoutes from "./src/routes/question.route.js";
 import judgeRoutes from "./src/routes/judge.route.js";
 import submitRoutes from "./src/routes/submit.route.js";
+import aiRoutes from "./src/routes/ai.route.js";
 import { connectDB } from "./src/lib/db.js";
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/api/room", roomRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/judge", judgeRoutes);
 app.use("/api/submit", submitRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Serve frontend build in production
 if (process.env.NODE_ENV === "production") {

@@ -33,9 +33,7 @@ const Room = () => {
 
   return (
     <div className="bg-[#0f1117] min-h-screen text-white px-6 py-8 max-w-screen-2xl mx-auto">
-      {/* Top Bar */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 flex-wrap mb-8">
-        {/* Room ID Box */}
         <div
           className="
             flex items-center gap-6
@@ -55,13 +53,13 @@ const Room = () => {
 
           <span
             className="
-              font-mono 
-              font-bold 
-              text-lg 
-              text-white 
-              bg-blue-800 bg-opacity-60 
-              px-4 py-1 
-              rounded-md 
+              font-mono
+              font-bold
+              text-lg
+              text-white
+              bg-blue-800 bg-opacity-60
+              px-4 py-1
+              rounded-md
               truncate
               max-w-[220px]
               select-text
@@ -75,9 +73,9 @@ const Room = () => {
             onClick={() => navigator.clipboard.writeText(roomId)}
             aria-label="Copy Room ID"
             className="
-              bg-blue-500 hover:bg-blue-600 active:bg-blue-700 
-              transition 
-              rounded-md 
+              bg-blue-500 hover:bg-blue-600 active:bg-blue-700
+              transition
+              rounded-md
               p-2
               flex items-center justify-center
               shadow
@@ -90,7 +88,6 @@ const Room = () => {
             "
             title="Copy Room ID"
           >
-            {/* Clipboard SVG Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -108,9 +105,7 @@ const Room = () => {
           </button>
         </div>
 
-        {/* Grouped Participants + Timer */}
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          {/* Participants Box */}
           <div className="bg-gradient-to-br from-emerald-900 to-emerald-700 border border-emerald-600 rounded-xl px-6 py-4 flex flex-wrap min-w-0 shadow-lg">
             <h2 className="w-full text-sm font-semibold uppercase tracking-wide mb-3 text-emerald-200">
               Participants
@@ -122,7 +117,7 @@ const Room = () => {
                   className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-medium truncate max-w-[120px]"
                   title={user.user.fullName}
                 >
-                  👤 {user.user.fullName}
+                  {user.user.fullName}
                 </span>
               ))}
               {uniqueRoomUsers.length === 0 && (
@@ -133,13 +128,12 @@ const Room = () => {
             </div>
           </div>
 
-          {/* Timer Box */}
           <div className="bg-gradient-to-br from-yellow-900 to-yellow-700 border border-yellow-600 rounded-xl px-6 py-4 flex flex-col items-center justify-center min-w-0 shadow-lg">
             <h2 className="text-sm font-semibold uppercase tracking-wide mb-2 text-yellow-300">
               Time Left
             </h2>
             <div className="font-mono font-extrabold text-yellow-400 text-3xl select-none">
-              ⏳ {formatTime(timeLeftMs)}
+              {formatTime(timeLeftMs)}
             </div>
           </div>
         </div>
@@ -147,9 +141,8 @@ const Room = () => {
 
       {question ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left: Question Section */}
           <div className="bg-[#1a1c23] border border-gray-700 rounded-xl p-6 shadow-lg">
-            <h3 className="text-2xl font-bold text-pink-400 mb-2">
+            <h3 className="text-2xl font-bold text-red-600 mb-2 font-serif">
               {question.title}
             </h3>
             <p className="text-gray-300 mb-4">{question.description}</p>
@@ -165,8 +158,7 @@ const Room = () => {
               </p>
               <p>
                 <span className="font-semibold text-white">Constraints:</span>{" "}
-                Min {question.constraints?.nMin}, Max{" "}
-                {question.constraints?.nMax}
+                Min {question.constraints?.nMin}, Max {question.constraints?.nMax}
               </p>
             </div>
 
@@ -181,7 +173,6 @@ const Room = () => {
             )}
           </div>
 
-          {/* Right: Code Editor */}
           <div className="bg-[#1a1c23] border border-gray-700 rounded-xl p-4 shadow-lg">
             <CodeRunner
               question={question}
